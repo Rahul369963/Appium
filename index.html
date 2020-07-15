@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        RPA Report
+    </title>
+   <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script> -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.8/xlsx.full.min.js"></script> -->
+   <!--  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.8/xlsx.full.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script> -->
+    <!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> -->
+    <script src="./js/jquery.js"></script>
+     <script src="./js/jquery.canvasjs.min.js"></script>
+    <script src="./js/canvasjs.min.js"></script>
+    <!-- <script src="./js/excanvas.js"></script> -->
+    <script src="./js/app.js"></script>
+    <style type="text/css">
+    	table,th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 100%;
+            /* text-align: center; */
+			background-color:#FFE4C4;
+			table-layout: fixed;
+		}
+		
+		
+
+		 /* .contain{
+			display: none;
+		}  */
+		 .loading{
+			position: fixed; 
+			width: 100%; 
+			height: 100%; 
+			display: inline;
+			text-align: center;
+		} 
+		.container {
+		margin: auto;
+		position:relative;
+		text-align: center;
+		color: aqua;
+		background: rgb(100, 116, 88);
+		height: 110px;
+		width:auto;
+		
+		}
+		img{
+			float: right;
+			height: 105px;
+			width: 75px;
+		}
+		body  {
+  background-image: url("./images/Background.jpg");
+  background-color: #cccccc;
+}
+
+		.data1{
+			margin-top: 430px;
+			display: none;
+			float: left;
+			width: 50%;
+		}
+		.data2{
+			float: right;
+			margin-top: 430px;
+			display: none;
+			width: 50%;
+		}
+
+
+  .dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <!-- <div class="loading">
+    	<img src="./images/loading.gif">
+	</div> -->
+	<div class="container">
+		<img src="./images/Logo.png">
+		<h1>RPA EXECUTION DASHBOARD</h1>
+	</div>
+        <div class="contain">
+    	<div>
+	    	 <input type="number" name="TotalTextCases" id="ttc">
+			<br>
+			 <input type="number" name="TotalExecTestCases" id="tetc">
+		    <br>
+		   <input type="number" name="pass" id="pass">
+		    <br>
+			<input type="number" name="fail" id="fail">
+			<br>
+			<input type="file" id="my_file_input" onchange="showExecReport()" onchange="ExcutePaiChart()"/>
+		</div> 
+		          
+		<div class="main" id="executionInfo">
+			<h2 style="text-align: center; width:100%; color: tomato;">Excution Summary Report</h2>  
+		</div> 
+
+		<div id="result" style="height: 100%; width: 50%;float: right">
+		
+			<div id="patch1" style="left: 10px;
+	        position: absolute;
+	        top: 730px;
+			
+	        z-index: 100;
+	        width:5%;
+			float: left;
+	        height: 20px;
+	        background-color: red;
+			">
+			</div>
+		
+		</div>
+
+	    <div id="chartContainer" style="height: 100%; width: 50%; float: right;"></div>
+
+
+	        <div id="patch" style="left: 10px;
+	        position: absolute;
+	        top: 730px;
+	        z-index: 100;
+	        width:5%;
+	        height: 20px;
+	        background-color: white;
+			">
+			</div>
+
+
+
+
+
+			<div class="dropdown">
+					<button class="dropbtn">View PassCase</button>
+					<div class="dropdown-content">
+					<table  id="data1" class="data1">
+							<tr>
+							<th>TestCaseId</th>
+							<th>Status</th>
+						</tr>
+						</table>
+				  </div>
+
+    <script >
+    	function showExecReport(){
+			$('#data1').show();
+			$('#data2').show();
+    		var totalTC = $("#ttc").val();
+    		var totalExecTC = $("#tetc").val();
+    		var pass = $("#pass").val();
+    		var fail = $("#fail").val();
+
+			console.log(fail);
+   
+    		var table = '<table> '+
+				            '<tr>'+
+				              '<th>Total T.C\'s</th>'+
+				              '<th>No. of T.C\'s Executed </th>'+
+				              '<th>Pass </th>'+
+				              '<th>Fail </th>'+
+				            '</tr>'+
+				            '<tr>'+
+				              '<td>' + totalTC + '</td>'+
+				              '<td>' + totalExecTC + '</td>'+
+				              '<td>' + pass + '</td>'+
+				              '<td>' + fail + '</td>'+
+				            '</tr>'+
+						'</table>'
+
+			$('#executionInfo').append(table)
+
+    		var barChart = new CanvasJS.Chart("result", {
+			backgroundColor: "#F5DEB3",	
+			title:{
+				text: "Execution Bar Chart"              
+			},
+			data: [              
+					{
+						type: "column",
+						dataPoints: [
+							{ label: "Total T.C's", y: parseInt(totalTC)},
+							{ label: "No. of T.C's Excuted ", color:"LightSkyBlue", y: parseInt(totalExecTC)},
+							{ label: "Pass", color:"Green", y: parseInt(pass)},
+							{ label: "Fail",color:"Red",  y: parseInt(fail)}
+						]
+					}
+				]
+			});
+			barChart.render();
+
+			var paiChart = new CanvasJS.Chart("chartContainer", {
+				animationEnabled: true,
+				backgroundColor: "#F5DEB3",
+				title: {
+					text: "RPA Execution Results"
+				},
+				data: [{
+					type: "pie",
+					startAngle: 0,
+					yValueFormatString: "##0.00\"%\"",
+					indexLabel: "{label} {y}",
+					dataPoints: [
+						{label: "Pass", color:"Green", y: parseInt((pass/totalExecTC)*100)},
+						{label: "Fail", color:"Red", y: parseInt((fail/totalExecTC)*100)},
+					]
+				}]
+			})
+			paiChart.render();
+			// $(".table").css({"width":"100%","background":"#FFE4C4"})
+
+			$(".contain").css({
+				"display": "inline"
+			})
+			$(".loading").css({
+			 	"display": "none"
+			 }) 
+    	}
+
+	</script> 
+	
+</body>
+
+</html>

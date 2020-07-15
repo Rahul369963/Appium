@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> RPA Graph </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+        <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+        <script src="./js/app.js"></script>
+        <style>
+            html, body{
+                margin: 0;
+                background-color:rgb(8, 1, 1);
+                }
+            .navbar{
+                background-image: url("./images/bg.png");
+                background-repeat: repeat-x;
+                color :aliceblue;
+                height: 80px;
+                
+                border-radius: 0px !important;
+                /* display: flex;
+                justify-content: space-between; */
+            }
+            .navbar h1{
+                float: left;
+                margin: 20px 200px;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                     
+                -webkit-touch-callout: none; 
+                -webkit-user-select: none; 
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                    -ms-user-select: none;
+                        user-select: none; 
+            }
+            .navbar img{
+                float: right;
+                margin: 10px 50px;
+            }
+            #client{
+                display: flex;
+                justify-content: space-between;
+                margin: 0 50px;
+            }
+            .values{
+                margin: 10px 50px;
+                display: flex;;
+                justify-content: space-between;
+            }
+            table{
+                height: 50px;
+                width: 170px;
+                color: #fff;
+                font-family:Georgia, 'Times New Roman', Times, serif;
+                border: cornsilk, solid,10px;
+                
+            }
+            th{
+                text-align: center; 
+                font-size:25px;
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            
+            }
+            td{
+                text-align: center;
+                font-size:16px;
+                font-weight: bold;
+                
+            }
+            .graph{
+                display: flex;
+                justify-content: space-around;
+                margin: 50px 40px;
+            }
+            #barChart{
+                width: 700px;
+                height: 400px;
+            }
+            #pieChart{
+                width: 600px;
+                height: 400px;
+                margin: 10px;;
+            }
+            #icon{
+                font-size: 30px;
+            }
+
+            #client{
+
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 16px;
+            }
+
+
+
+
+        </style>,
+
+    </head>
+    <body>
+        <div class="navbar">
+            <h1>AUTOMATION TESTING DASHBOARD </h1>
+            <img src="./images/Logo.png" height="60px" width="200px">
+        </div>
+
+        <div id="input1">
+            <input type="number" name="TotalTextCases" id="ttc">
+           <br>
+            <input type="number" name="TotalExecTestCases" id="tetc">
+           <br>
+          <input type="number" name="pass" id="pass">
+           <br>
+           <input type="number" name="fail" id="fail" onchange="showExecReport()">
+           <br>
+           <input type="file" id="my_file_input" onchange="showExecReport()" onchange="ExcutePaiChart()"/>
+       </div>
+
+
+
+
+
+        <div id="client">
+            <div>
+                <pre id="client">  Client Name : <span>ABFL</span></pre>
+            </div>
+            <div>
+                <pre id="client">Product Name : <span>LAP</span></pre>
+            </div>
+            <div>
+                <pre id="client">Total Execution Time(in secs) : <span>11:55 14/11/2019</span></pre>
+            </div>
+        </div>
+  <!-- /////////////////////////////////////////   Excution Summary Here......   //////////////////////////////////////////////////////  -->      
+        <div class="values">
+            <table id="total" style="background: #740946; box-shadow: 10px 10px 10px grey;">
+                <tr>
+                    <td rowspan="2"><span id="icon"  class="glyphicon glyphicon-duplicate"></span></td>
+                    <td> TOTAL </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 20px;" id="total1"> </td>
+                </tr>
+            </table>
+
+            <table id="executed" style="background: #0B564D;  box-shadow: 10px 10px 10px grey;">
+                    <tr>
+                            <td rowspan="2"><span id="icon"  class="glyphicon glyphicon-play"></span></td>
+                            <td> EXECUTED </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 20px;" id="executed1">  </td>
+                        </tr>
+                    </table>
+
+            <table id="pass" style="background: #7E1B88; box-shadow: 10px 10px 10px grey;">
+                    <tr>
+                            <td rowspan="2"><span id="icon"  class="glyphicon glyphicon-thumbs-up"></span></td>
+                            <td> PASS </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 20px;" id="pass1">  </td>
+                        </tr>
+                    </table>
+            <table id="fail" style="background: #093673;  box-shadow: 10px 10px 10px grey;">
+                    <tr>
+                            <td rowspan="2"><span id="icon"  class="glyphicon glyphicon-thumbs-down"></span></td>
+                            <td> FAIL </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 20px;" id="fail1">  </td>
+                        </tr>
+                    </table>
+                
+            <table id="issue" style="background: rgb(163, 131, 4);  box-shadow: 10px 10px 10px grey;">
+                    <tr>
+                            <td rowspan="2"><span id="icon"  class="glyphicon glyphicon-alert"></span></td>
+                            <td> BLOCKED </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 20px;" id="issue1"> </td>
+                        </tr>
+                    </table>
+        </div>
+ <!-- /////////////////////////////////////////   Function Start HERE   //////////////////////////////////////////////////////  -->
+        <script>
+                 
+                function showExecReport(){
+                    var totalTC = $("#ttc").val();
+                    var totalExecTC = $("#tetc").val();
+                    var pass = $("#pass").val();
+                    var fail = $("#fail").val();
+                    var block=totalTC-totalExecTC;
+                    
+                    $('#total1').append(totalTC)
+                    $('#executed1').append(totalExecTC)
+                    $('#pass1').append(pass)
+                    $('#fail1').append(fail)
+                    $('#issue1').append(block)
+
+                    console.log(totalTC+" "+totalExecTC);
+            
+                    var pieChart = new CanvasJS.Chart("pieChart" ,{
+                        animationEnabled: true,
+                        
+                        
+                        title: {
+                            text: "Test Execution Status Percentage"
+                        },
+                        data: [{
+                            type: "doughnut",
+                            innerRadius: "50%",
+                            showInLegend: true,
+                            legendText: "{label}",
+                            indexLabel: "{label}: #percent%",
+                            dataPoints: [
+                                { label: "Pass", y: parseInt((pass/totalExecTC)*100)},
+                                { label: "Fail", y: parseInt((fail/totalExecTC)*100)},
+                                { label: "Blocked", y: parseInt(((totalTC-totalExecTC)/totalTC)*100) },
+                                
+                            ]
+                        }]
+                    });
+                    pieChart.render();
+
+
+ ///////////////////////////////// BAR CHART START HERE............////////////////////////////////////////////                   
+                    
+                    var barChart = new CanvasJS.Chart("barChart" , {
+                        animationEnabled: true,
+                        title: {
+                            text: "Test Case Summary Graph"
+                        },
+                        axisY: {
+                            title: "Test Case Execution Count",
+                            suffix: "",
+                            includeZero: true
+                        },
+                        axisX: {
+                            title: "Test Case Execution Status",
+                            
+                        },
+                        data: [{
+                            type: "column",
+                            yValueFormatString: "#,##0.0#"%"",
+                            dataPoints: [
+                                { label: "Total", y: parseInt(totalTC) },	
+                                { label: "Executed", y: parseInt(totalExecTC) },	
+                                { label: "Pass", y: parseInt(pass) },
+                                { label: "Fail", y: parseInt(fail) },	
+                                { label: "Blocked", y: parseInt(block) },
+                                                                
+                            ]
+                        }]
+                    })
+                
+                barChart.render();
+                $("#input1").css({
+				"display": "none"
+			})
+                }
+            </script>
+
+        <div class="graph">
+            <div id="barChart">
+            </div>
+
+            <div id="pieChart">
+            </div>
+        </div>
+
+        <center style="display: flex; justify-content: space-around;">
+            <a id="a1">Hover To Show</a>
+            <a id="a2">Hover To Show</a>
+        </center>
+    </body>
+</html>
